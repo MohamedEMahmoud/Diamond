@@ -39,10 +39,15 @@ exports.getProduct = asyncHandler(async (req, res) => {
 // @route   get  /api/v1/products
 // @access  public
 exports.getProducts = asyncHandler(async (req, res) => {
+	const queryStringObj = { ...req.query };
+	const excludesFields = ['page', 'limit', 'sort'];
+
+	excludesFields.forEach((field) => delete queryStringObj[field]);
+
 	const page = req.query.page * 1 || 1;
 	const limit = req.query.limit * 1 || 5;
 	const skip = (page - 1) * limit;
-	const products = await Product.find()
+	const products = await Product.find({ queryStringObj })
 		.skip(skip)
 		.limit(limit)
 		.populate([
