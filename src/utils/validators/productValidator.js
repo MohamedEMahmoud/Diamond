@@ -80,7 +80,7 @@ exports.createProductValidator = [
 		.isMongoId()
 		.withMessage('Invalid ID formate')
 		.custom(async (subcategoriesIds) => {
-			const subCategories = SubCategory.find({
+			const subCategories = await SubCategory.find({
 				_id: { $exists: true, $in: subcategoriesIds },
 			});
 			if (
@@ -92,11 +92,11 @@ exports.createProductValidator = [
 			return true;
 		})
 		.custom(async (val, { req }) => {
-			const subcategories = await SubCategory.find({
+			const subCategories = await SubCategory.find({
 				category: req.body.category,
 			});
 			const subCategoriesIdsInDB = [];
-			subcategories.forEach((subCategory) => {
+			subCategories.forEach((subCategory) => {
 				subCategoriesIdsInDB.push(subCategory._id.toString());
 			});
 			// check if subcategories ids in db include subcategories in req.body (true)
