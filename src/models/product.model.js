@@ -74,7 +74,7 @@ const productSchema = new mongoose.Schema(
 			},
 		},
 		versionKey: false,
-		timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+		timestamps: true,
 	}
 );
 
