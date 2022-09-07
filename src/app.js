@@ -25,7 +25,7 @@ app.get('/', (_req, res) => {
 });
 
 app.use('*', async () => {
-	throw new NotFoundError();
+	throw new NotFoundError('Route Not Found!');
 });
 
 app.use(errorHandler);

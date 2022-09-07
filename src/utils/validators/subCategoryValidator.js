@@ -1,4 +1,5 @@
-const { check } = require('express-validator');
+const { check, body } = require('express-validator');
+const slugify = require('slug');
 const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 
 exports.getSubCategoryValidator = [
@@ -19,7 +20,11 @@ exports.createSubCategoryValidator = [
 		.isLength({ min: 2 })
 		.withMessage('Too short category name')
 		.isLength({ max: 32 })
-		.withMessage('Too long category name'),
+		.withMessage('Too long category name')
+		.custom((val, { req }) => {
+			req.body.slug = slugify(val);
+			return true;
+		}),
 	check('categoryId')
 		.notEmpty()
 		.withMessage('Category id is required')
@@ -34,6 +39,10 @@ exports.updateSubCategoryValidator = [
 		.withMessage('id filed is required')
 		.isMongoId()
 		.withMessage('Invalid category id'),
+	body('name').custom((val, { req }) => {
+		req.body.slug = slugify(val);
+		return true;
+	}),
 	validatorMiddleware,
 ];
 

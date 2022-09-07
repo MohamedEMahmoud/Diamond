@@ -78,4 +78,20 @@ const productSchema = new mongoose.Schema(
 	}
 );
 
+productSchema.pre(/^find/, function (next) {
+	this.populate([
+		{ path: 'category', model: 'Category' },
+		{ path: 'subCategory', model: 'SubCategory' },
+	]);
+	next();
+});
+
+productSchema.post('save', function (next) {
+	this.populate([
+		{ path: 'category', model: 'Category' },
+		{ path: 'subCategory', model: 'SubCategory' },
+	]);
+	next();
+});
+
 module.exports = mongoose.model('Product', productSchema);

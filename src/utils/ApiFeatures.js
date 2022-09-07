@@ -34,11 +34,10 @@ class ApiFeatures {
 		}
 	}
 
-	search() {
+	search(modelName) {
 		if (this.queryString.keyword) {
 			let query = {};
-			console.log(this.mongooseQuery.mongooseCollection.name);
-			if (this.mongooseQuery.mongooseCollection.name === 'product') {
+			if (modelName === 'product') {
 				query.$or = [
 					{ title: this.queryString.keyword, $options: 'i' },
 					{ description: this.queryString.description, $options: 'i' },
