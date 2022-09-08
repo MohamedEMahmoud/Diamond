@@ -4,7 +4,7 @@ const factory = require('./handlersFactory');
 // @desc    Create category
 // @route   POST  /api/v1/category
 // @access  Private/Admin-Manager
-exports.createCategory = factory.createOne(Category);
+exports.createCategory = factory.createOne(Category, 'category');
 
 // @desc    get  specific category
 // @route   get  /api/v1/category/:id

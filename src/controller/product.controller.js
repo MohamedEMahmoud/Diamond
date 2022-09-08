@@ -1,17 +1,10 @@
-const asyncHandler = require('express-async-handler');
 const Product = require('../models/product.model');
 const factory = require('./handlersFactory');
 
 // @desc    Create product
 // @route   POST  /api/v1/product
 // @access  Private/Admin-Manager
-exports.createProduct = asyncHandler(async (req, res) => {
-	const product = new Product(req.body);
-
-	await product.save();
-
-	res.status(201).send({ product, success: true });
-});
+exports.createProduct = factory.createOne(Product, 'product');
 
 // @desc    get  specific product
 // @route   get  /api/v1/product/:id

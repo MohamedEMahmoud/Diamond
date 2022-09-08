@@ -3,13 +3,11 @@ const BadRequestError = require('../utils/errors/BadRequestError');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ApiFeatures = require('../utils/ApiFeatures');
 
-exports.createOne = (Model) =>
+exports.createOne = (Model, ModelName = '') =>
 	asyncHandler(async (req, res) => {
 		const document = await Model.findOne({ slug: req.body.slug });
-		if (document) {
-			throw new BadRequestError(
-				`${Model.collection.collectionName} already exists`
-			);
+		if (document && ModelName) {
+			throw new BadRequestError(`${ModelName} already exists`);
 		}
 
 		const newDocument = new Model(req.body);
@@ -31,14 +29,14 @@ exports.getOne = (Model) =>
 		res.status(200).send({ data: document, success: true });
 	});
 
-exports.getAll = (Model, ModelName = '') =>
+exports.getAll = (Model) =>
 	asyncHandler(async (req, res) => {
-		const documentsCount = Model.countDocuments();
+		const documentsCount = await Model.countDocuments();
 		const apiFeatures = new ApiFeatures(Model.find({}), req.query)
 			.filter()
 			.sort()
 			.limitFields()
-			.search(ModelName)
+			.search()
 			.paginate(documentsCount);
 
 		const { paginationResults, mongooseQuery } = apiFeatures;
