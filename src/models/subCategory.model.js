@@ -32,4 +32,13 @@ const subCategorySchema = new mongoose.Schema(
 	}
 );
 
+subCategorySchema.post('save', function (next) {
+	this.populate({
+		path: 'category',
+		model: 'Category',
+		select: 'name -_id',
+	});
+	next();
+});
+
 module.exports = mongoose.model('subCategory', subCategorySchema);
