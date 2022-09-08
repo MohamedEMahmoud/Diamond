@@ -32,11 +32,15 @@ class ApiFeatures {
 			const fields = this.queryString.fields.split(',').join(' ');
 			this.mongooseQuery = this.mongooseQuery.select(fields);
 		}
+		return this;
 	}
 
-	search(modelName) {
+	search() {
 		if (this.queryString.keyword) {
 			let query = {};
+			const {
+				mongooseCollection: { modelName },
+			} = this.mongooseQuery;
 			if (modelName === 'product') {
 				query.$or = [
 					{ title: this.queryString.keyword, $options: 'i' },
@@ -45,7 +49,6 @@ class ApiFeatures {
 			} else {
 				query = { name: { $regex: this.queryString.keyword, $options: 'i' } };
 			}
-
 			this.mongooseQuery = this.mongooseQuery.find(query);
 		}
 
@@ -61,7 +64,7 @@ class ApiFeatures {
 		const pagination = {};
 		pagination.page = page;
 		pagination.limit = limit;
-		pagination.numberOfPages = Math.ceil(limit / skip);
+		pagination.numberOfPages = Math.ceil(documentsCount / limit);
 
 		if (endIndex < documentsCount) {
 			pagination.next = page + 1;
