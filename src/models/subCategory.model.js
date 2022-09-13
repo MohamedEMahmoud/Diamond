@@ -32,8 +32,17 @@ const subCategorySchema = new mongoose.Schema(
 	}
 );
 
-subCategorySchema.post('save', function (next) {
+subCategorySchema.pre(/^find/, function (next) {
 	this.populate({
+		path: 'category',
+		model: 'Category',
+		select: 'name -_id',
+	});
+	next();
+});
+
+subCategorySchema.post('save', async (doc, next) => {
+	await doc.populate({
 		path: 'category',
 		model: 'Category',
 		select: 'name -_id',

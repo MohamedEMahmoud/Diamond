@@ -41,7 +41,10 @@ const productSchema = new mongoose.Schema(
 			type: String,
 			required: [true, 'Product image cover is required'],
 		},
-		images: [String],
+		images: {
+			type: Array,
+			default: [],
+		},
 		category: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Category',
@@ -49,7 +52,7 @@ const productSchema = new mongoose.Schema(
 		subcategories: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
-				ref: 'SubCategory',
+				ref: 'subCategory',
 			},
 		],
 		brand: {
@@ -79,18 +82,12 @@ const productSchema = new mongoose.Schema(
 );
 
 productSchema.pre(/^find/, function (next) {
-	this.populate([
-		{ path: 'category', model: 'Category' },
-		{ path: 'subCategory', model: 'SubCategory' },
-	]);
+	this.populate('category subcategories brand');
 	next();
 });
 
-productSchema.post('save', function (next) {
-	this.populate([
-		{ path: 'category', model: 'Category' },
-		{ path: 'subCategory', model: 'SubCategory' },
-	]);
+productSchema.post('save', async (doc, next) => {
+	await doc.populate('category subcategories brand');
 	next();
 });
 
