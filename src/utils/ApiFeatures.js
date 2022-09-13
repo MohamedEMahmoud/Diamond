@@ -41,10 +41,11 @@ class ApiFeatures {
 			const {
 				mongooseCollection: { modelName },
 			} = this.mongooseQuery;
-			if (modelName === 'product') {
+
+			if (modelName === 'Product') {
 				query.$or = [
-					{ title: this.queryString.keyword, $options: 'i' },
-					{ description: this.queryString.description, $options: 'i' },
+					{ title: { $regex: this.queryString.keyword, $options: 'i' } },
+					{ description: { $regex: this.queryString.keyword, $options: 'i' } },
 				];
 			} else {
 				query = { name: { $regex: this.queryString.keyword, $options: 'i' } };
