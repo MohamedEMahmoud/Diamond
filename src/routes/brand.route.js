@@ -14,17 +14,20 @@ const {
 	updateBrandValidator,
 	deleteBrandValidator,
 } = require('../utils/validators/brandValidator');
+const uploadImage = require('../middlewares/uploadFiles');
 
-
-router.post('/api/v1/brand', createBrandValidator, createBrand);
+router.post('/api/v1/brand', [uploadImage, createBrandValidator], createBrand);
 
 router.get('/api/v1/brand/:id', getBrandValidator, getBrand);
 
 router.get('/api/v1/brands', getBrands);
 
-router.patch('/api/v1/brand/id', updateBrandValidator, updateBrand);
+router.patch(
+	'/api/v1/brand/:id',
+	[uploadImage, updateBrandValidator],
+	updateBrand
+);
 
 router.delete('/api/v1/brand/:id', deleteBrandValidator, deleteBrand);
-
 
 module.exports = router;
