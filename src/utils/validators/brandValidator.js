@@ -26,10 +26,12 @@ exports.createBrandValidator = [
 
 exports.updateBrandValidator = [
 	check('id').isMongoId().withMessage('Invalid brand id'),
-	body('name').custom((val, { req }) => {
-		req.body.slug = slugify(val);
-		return true;
-	}),
+	body('name')
+		.if(body('name').exists())
+		.custom((val, { req }) => {
+			req.body.slug = slugify(val);
+			return true;
+		}),
 	validatorMiddleware,
 ];
 
