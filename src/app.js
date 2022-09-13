@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const categoryRouter = require('./routes/category.route');
 const subCategoryRouter = require('./routes/subCategory.route');
+const brandRouter = require('./routes/brand.route');
 const productRouter = require('./routes/product.route');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./utils/errors/NotFoundError');
@@ -17,6 +18,7 @@ app.use(
 	cors({ origin: '*' }),
 	categoryRouter,
 	subCategoryRouter,
+	brandRouter,
 	productRouter
 );
 
