@@ -4,7 +4,7 @@ const factory = require('./handlersFactory');
 // @desc    Create product
 // @route   POST  /api/v1/product
 // @access  Private/Admin-Manager
-exports.createProduct = factory.createOne(Product, 'product');
+exports.createProduct = factory.createOne(Product);
 
 // @desc    get  specific product
 // @route   get  /api/v1/product/:id
