@@ -2,26 +2,33 @@ const asyncHandler = require('express-async-handler');
 const BadRequestError = require('../utils/errors/BadRequestError');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const ApiFeatures = require('../utils/ApiFeatures');
+const UploadImage = require('../utils/UploadImage');
 
 exports.createOne = (Model, ModelName = '') =>
 	asyncHandler(async (req, res) => {
-		const document = await Model.findOne({ slug: req.body.slug });
-		if (document && ModelName) {
+		const existingDocument = await Model.findOne({ slug: req.body.slug });
+		if (existingDocument && ModelName) {
 			throw new BadRequestError(`${ModelName} already exists`);
 		}
+		const document = new Model(req.body);
+		if (req.files && Object.keys(req.files).length) {
+			const image = new UploadImage(
+				req.files,
+				Model.collection.modelName,
+				document
+			);
+			await image.upload();
+		}
+		await document.save();
 
-		const newDocument = new Model(req.body);
-
-		await newDocument.save();
-
-		res.status(201).send({ data: newDocument, success: true });
+		res.status(201).send({ data: document, success: true });
 	});
 
 exports.getOne = (Model) =>
 	asyncHandler(async (req, res) => {
 		const { id } = req.params;
 
-		const document = await Model.findOne({ id });
+		const document = await Model.findById(id);
 		if (!document) {
 			throw new NotFoundError(`No document for this id ${id} `);
 		}
@@ -54,12 +61,22 @@ exports.getAll = (Model) =>
 
 exports.updateOne = (Model) =>
 	asyncHandler(async (req, res) => {
-		const document = await Model.findOneAndUpdate(req.params.id, req.body, {
+		const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 		});
 
 		if (!document) {
 			throw new NotFoundError(`No document for this id ${req.params.id}`);
+		}
+
+		if (req.files && Object.keys(req.files).length) {
+			const image = new UploadImage(
+				req.files,
+				Model.collection.modelName,
+				document
+			);
+			await image.upload();
+			await document.save();
 		}
 
 		res.status(200).send({ document, success: true });
