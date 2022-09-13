@@ -9,12 +9,12 @@ exports.createProduct = factory.createOne(Product);
 // @desc    get  specific product
 // @route   get  /api/v1/product/:id
 // @access  public
-exports.getProduct = factory.getOne(Product);
+exports.getProduct = factory.getOne(Product, 'product');
 
 // @desc    get  products
 // @route   get  /api/v1/products
 // @access  public
-exports.getProducts = factory.getAll(Product, 'product');
+exports.getProducts = factory.getAll(Product);
 
 // @desc    update  product
 // @route   patch  /api/v1/product/:id
